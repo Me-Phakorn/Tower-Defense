@@ -30,19 +30,14 @@ namespace TowerDefense.Projectiles
             particle = GetComponent<ParticleSystem>();
         }
 
-        public void Initialize(float finalDamage, float speed)
-        {
-            this.speed = speed;
-            this.finalDamage = finalDamage;
-        }
-
         public void Initialize(Effect effect, float effectRange, float baseDamage, float finalDamage, float speed)
         {
             this.effect = effect;
             this.baseDamage = baseDamage;
             this.effectRange = effectRange;
 
-            Initialize(finalDamage, speed);
+            this.speed = speed;
+            this.finalDamage = finalDamage;
         }
 
         public void Shoot(Enemy target)
@@ -68,10 +63,13 @@ namespace TowerDefense.Projectiles
             var impactAOE = ObjectPool.GetPool(impactPrefab, target.transform.position, Quaternion.identity).GetComponent<AreaOfEffect>();
 
             if (!impactAOE)
+            {
                 ((IDamageable)target).Damage(finalDamage);
+                effect?.ApplyEffect(baseDamage, new Enemy[] { target });
+            }
             else
             {
-                impactAOE.transform.localScale = Vector3.one * effectRange;
+                impactAOE.transform.localScale = Vector3.one;
                 impactAOE.Initialize(effect, baseDamage, finalDamage, effectRange);
                 impactAOE.ApplyEffect();
             }

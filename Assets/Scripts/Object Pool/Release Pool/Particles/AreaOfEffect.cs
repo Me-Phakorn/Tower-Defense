@@ -41,7 +41,7 @@ namespace TowerDefense.Projectiles
 
         public void ApplyEffect()
         {
-            RaycastHit[] hits = Physics.SphereCastAll(transform.position, ((GameSetting.BASE_RANGE * effectRange) + 1), transform.forward);
+            RaycastHit[] hits = Physics.SphereCastAll(transform.position, effectRange, transform.forward);
             Enemy[] enemies = hits.Where(h => h.collider.CompareTag("Enemy")).Select(h => h.collider.GetComponent<Enemy>()).ToArray();
 
             if (enemies.Length == 0)

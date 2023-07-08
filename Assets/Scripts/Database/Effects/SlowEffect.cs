@@ -9,9 +9,12 @@ namespace TowerDefense.Database
         [SerializeField, Range(1, 100)]
         protected float slowPercent = 35;
 
+        public float SlowPercent => slowPercent;
+
         public override void ApplyEffect(float baseDamage, Enemy[] enemies)
         {
-
+            foreach (IEffectStatus enemy in enemies)
+                enemy.AddEffectStatus(baseDamage, this);
         }
     }
 }

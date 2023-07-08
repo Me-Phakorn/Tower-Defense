@@ -13,8 +13,8 @@ namespace TowerDefense
         private int attackDamage = 1;
         [SerializeField, Range(0.1f, 5f)]
         private float fireRate = 1;
-        [SerializeField, Range(0.1f, 5f)]
-        private float attackRange = 1;
+        [SerializeField, Range(3, 7)]
+        private int attackRange = 3;
 
         [Header("Projectile Setting")]
         [SerializeField]
@@ -27,9 +27,9 @@ namespace TowerDefense
         public bool IsEnemies { get => enemies != null && enemies.Count > 0; }
 
         public int AttackDamage => attackDamage;
+        public int AttackRange => attackRange;
 
         public float FireRate => fireRate;
-        public float AttackRange => attackRange;
 
         public Transform ProjectileSpot => projectileSpot;
 
@@ -46,7 +46,7 @@ namespace TowerDefense
             fireRate = setting.FireRate;
 
             var _Range = GetComponent<SphereCollider>();
-            _Range.radius = ((GameSetting.BASE_RANGE * attackRange) + 1);
+            _Range.radius = attackRange;
 
             shootTimer = 0;
         }

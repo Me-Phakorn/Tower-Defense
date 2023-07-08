@@ -12,11 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 468d3c153f74c2d478efd150949921bd, type: 3}
   m_Name: Slow Projectile
   m_EditorClassIdentifier: 
-  projectileName: 
+  projectileName: Snow
   description: 
   muzzlePrefab: {fileID: 0}
-  projectilePrefab: {fileID: 0}
-  impactPrefab: {fileID: 0}
+  projectilePrefab: {fileID: 3805482851948878735, guid: 39069ea03f8b9d24e96eaa923492f7e2, type: 3}
   multipleDamage: 1
-  projectileDuration: 0.2
+  projectileSpeed: 5.02
   effect: {fileID: 11400000, guid: ca518b775993bbe49a22aef772b2d631, type: 2}

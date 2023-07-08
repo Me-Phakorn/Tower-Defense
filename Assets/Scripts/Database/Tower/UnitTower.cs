@@ -23,15 +23,15 @@ namespace TowerDefense.Database
 
         [SerializeField, Range(0.1f, 5f)]
         private float fireRate = 1;
-        [SerializeField, Range(0.1f, 5f)]
-        private float attackRange = 1;
+        [SerializeField, Range(3, 7)]
+        private int attackRange = 3;
 
         public GameObject UnitPrefab => unitPrefab;
 
         public Projectile Projectile => projectile;
 
         public float FireRate => fireRate;
-        public float AttackRange => attackRange;
+        public int AttackRange => attackRange;
         public int AttackDamage => attackDamage;
 
 

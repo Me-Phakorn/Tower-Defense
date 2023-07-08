@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7abe552ca94598a4f95662ce03a31613, type: 3}
   m_Name: Slow Effect
   m_EditorClassIdentifier: 
-  effectName: 
+  effectName: Slow Effect
   description: 
-  damagePercent: 50
+  maximumStack: 1
+  effectPercent: 0
   effectDuration: 2
-  effectSpeed: -2.07
+  slowPercent: 35
