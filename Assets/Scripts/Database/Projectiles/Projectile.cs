@@ -6,12 +6,6 @@ namespace TowerDefense.Database
 {
     public abstract class Projectile : ScriptableObject
     {
-        [System.Serializable]
-        public struct Setting
-        {
-
-        }
-
         [Header("General")]
         public string projectileName;
         [TextArea] public string description;
@@ -24,10 +18,10 @@ namespace TowerDefense.Database
 
         [Header("Projectile Setting")]
         [SerializeField, Range(0.5f, 3f)]
-        protected float multipleDamage = 1;
+        protected float multipleDamage;
 
-        [SerializeField, Range(0.1f, 2f)]
-        protected float projectileDuration = 0.2f;
+        [SerializeField, Range(1f, 20f)]
+        protected float projectileSpeed;
 
         [Header("Effect Setting")]
         [SerializeField]
@@ -39,6 +33,7 @@ namespace TowerDefense.Database
         }
 
         public abstract void Shoot<T>(T source) where T : Tower;
+        
         public abstract void Dispose();
 
     }

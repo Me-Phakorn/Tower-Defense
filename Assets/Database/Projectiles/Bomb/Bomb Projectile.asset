@@ -12,13 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf15527327c2590448cfe05c4765aaee, type: 3}
   m_Name: Bomb Projectile
   m_EditorClassIdentifier: 
-  projectileName: 
+  projectileName: Bomb
   description: 
   muzzlePrefab: {fileID: 0}
-  projectilePrefab: {fileID: 0}
-  impactPrefab: {fileID: 0}
+  projectilePrefab: {fileID: 2469748934587511824, guid: 7c48ed60774c5184ebe37efeb68e3817, type: 3}
   multipleDamage: 1
-  projectileDuration: 0.2
+  projectileSpeed: 5.02
   effect: {fileID: 0}
-  bombRange: 2
-  damagePercent: 50
+  bombRange: 1
+  damagePercent: 101

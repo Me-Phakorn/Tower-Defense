@@ -9,7 +9,7 @@ namespace TowerDefense.Database
         [SerializeField, Range(1, 100)]
         protected float slowPercent = 35;
 
-        public override void ApplyEffect(float baseDamage)
+        public override void ApplyEffect(float baseDamage, Enemy[] enemies)
         {
 
         }

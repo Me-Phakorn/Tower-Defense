@@ -2,6 +2,6 @@ namespace TowerDefense
 {
     public static class GameSetting
     {
-        public static readonly int MULTIPLE_RANGE = 3;
+        public static readonly int BASE_RANGE = 2;
     }
 }

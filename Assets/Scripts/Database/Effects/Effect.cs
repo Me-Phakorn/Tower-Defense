@@ -15,6 +15,6 @@ namespace TowerDefense.Database
         [SerializeField, Range(0.5f, 5)]
         protected float effectDuration = 2;
 
-        public abstract void ApplyEffect(float baseDamage);
+        public abstract void ApplyEffect(float baseDamage , Enemy[] enemies);
     }
 }

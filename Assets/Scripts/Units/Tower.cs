@@ -33,7 +33,7 @@ namespace TowerDefense
 
         public Transform ProjectileSpot => projectileSpot;
 
-        private List<Enemy> enemies;
+        private List<Enemy> enemies = new List<Enemy>();
 
         private float shootTimer = 0;
 
@@ -46,7 +46,7 @@ namespace TowerDefense
             fireRate = setting.FireRate;
 
             var _Range = GetComponent<SphereCollider>();
-            _Range.radius = attackRange * GameSetting.MULTIPLE_RANGE;
+            _Range.radius = ((GameSetting.BASE_RANGE * attackRange) + 1);
 
             shootTimer = 0;
         }
@@ -62,8 +62,11 @@ namespace TowerDefense
                 return;
 
             shootTimer += Time.deltaTime;
-            if (shootTimer >= FireRate)
+            if (shootTimer >= fireRate)
+            {
+                shootTimer = 0;
                 ExecuteProjectile();
+            }
         }
 
         private void ExecuteProjectile()

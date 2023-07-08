@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 468d3c153f74c2d478efd150949921bd, type: 3}
   m_Name: Normal Projectile
   m_EditorClassIdentifier: 
-  projectileName: 
+  projectileName: Bullet
   description: 
   muzzlePrefab: {fileID: 0}
-  projectilePrefab: {fileID: 0}
-  impactPrefab: {fileID: 0}
+  projectilePrefab: {fileID: 4023903094157716264, guid: e27dfff1d65a05146b8cf80c427e737e, type: 3}
   multipleDamage: 1
-  projectileDuration: 0.2
+  projectileSpeed: 9.05
+  effect: {fileID: 0}

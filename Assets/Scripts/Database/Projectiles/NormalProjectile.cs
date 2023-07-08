@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TowerDefense.Pooling;
+using TowerDefense.Projectiles;
 using UnityEngine;
 
 namespace TowerDefense.Database
@@ -12,14 +13,19 @@ namespace TowerDefense.Database
         {
             var enemy = source.GetEnemyTarget();
 
-            var _sourcePos = source.transform.position;
+            var _sourcePos = source.ProjectileSpot.position;
             var _sourceRot = Quaternion.LookRotation(enemy.transform.position - _sourcePos);
 
             if (muzzlePrefab)
                 ObjectPool.GetPool(muzzlePrefab, _sourcePos, _sourceRot);
 
             if (projectilePrefab)
-                ObjectPool.GetPool(projectilePrefab, _sourcePos, _sourceRot);
+            {
+                var _projectile = ObjectPool.GetPool(projectilePrefab, _sourcePos, _sourceRot);
+
+                _projectile.GetComponent<ProjectileMover>().Initialize(source.AttackDamage * multipleDamage, projectileSpeed);
+                _projectile.GetComponent<ProjectileMover>().Shoot(enemy);
+            }
         }
 
         public override void Dispose()

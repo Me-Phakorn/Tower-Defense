@@ -9,7 +9,7 @@ namespace TowerDefense.Database
         [SerializeField, Range(1, 10)]
         protected int effectTick = 3;
 
-        public override void ApplyEffect(float baseDamage)
+        public override void ApplyEffect(float baseDamage,Enemy[] enemies)
         {
 
         }

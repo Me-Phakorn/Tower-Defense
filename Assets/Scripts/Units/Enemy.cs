@@ -1,3 +1,4 @@
+using TowerDefense.Display;
 using UnityEngine;
 
 namespace TowerDefense
@@ -23,7 +24,7 @@ namespace TowerDefense
         public bool IsDie => currentHealth <= 0;
         public bool IsPause { get; set; } = false;
 
-        public bool HasPath => waypoints != null || waypoints.Length > 0;
+        public bool HasPath => waypoints != null && waypoints.Length > 0;
 
         private IDamageable target;
 
@@ -65,7 +66,10 @@ namespace TowerDefense
 
         public void Damage(float amount)
         {
+            DisplayDamage.Instance?.Display(transform, amount);
+            
             currentHealth -= amount;
+
             if (currentHealth <= 0)
                 IsPause = false;
         }
