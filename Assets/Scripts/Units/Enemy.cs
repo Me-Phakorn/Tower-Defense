@@ -6,7 +6,8 @@ using UnityEngine;
 
 namespace TowerDefense
 {
-    public class Enemy : MonoBehaviour, IDamageable, IEffectStatus, IEnemySetting
+    using Pooling;
+    public class Enemy : PoolRelease, IDamageable, IEffectStatus
     {
         [Header("Setting")]
         [SerializeField] private EnemyType type;
@@ -15,6 +16,7 @@ namespace TowerDefense
         [SerializeField] private float maximumHealth = 100;
 
         private float currentHealth = 100;
+        private float baseSpeed = 5f;
 
         private Transform[] waypoints;
 
@@ -25,11 +27,7 @@ namespace TowerDefense
 
         public bool HasPath => waypoints != null && waypoints.Length > 0;
 
-        public int AttackDamage => (int)attackDamage;
-
-        private float baseSpeed = 5f;
-        public float BaseSpeed => baseSpeed;
-        public float BaseHealth => maximumHealth;
+        public float CurrentHealth => currentHealth;
 
         private IDamageable target;
 
@@ -37,6 +35,8 @@ namespace TowerDefense
         private List<Effect.Stack> effectStacks = new List<Effect.Stack>();
 
         public bool HasEffect => effectStacks != null && effectStacks.Count() > 0;
+
+        public EnemyType Type => type;
 
         public void Initialize(IEnemySetting setting, Transform[] waypoints, IDamageable target)
         {
@@ -50,6 +50,10 @@ namespace TowerDefense
 
             this.waypoints = waypoints;
 
+            effectStacks = new List<Effect.Stack>();
+
+            IsPause = false;
+
             if (HasPath)
                 transform.position = waypoints[0].position;
         }
@@ -58,7 +62,8 @@ namespace TowerDefense
         {
             if (HasEffect)
             {
-                foreach (var _effect in effectStacks)
+                var _effectStacks = new List<Effect.Stack>(effectStacks);
+                foreach (var _effect in _effectStacks)
                 {
                     _effect.effectTimer += Time.deltaTime;
 
@@ -78,15 +83,17 @@ namespace TowerDefense
                     DestroyTower();
             }
 
-            transform.position = Vector3.MoveTowards(transform.position, waypoints[currentWaypointIndex].position, movementSpeed * Time.deltaTime);
+            if (currentWaypointIndex < waypoints.Length)
+                transform.position = Vector3.MoveTowards(transform.position, waypoints[currentWaypointIndex].position, (movementSpeed * Time.deltaTime) / 2);
         }
 
         private void DestroyTower()
         {
             IsPause = true;
-            gameObject.SetActive(false);
 
-            target?.Damage(AttackDamage);
+            target?.Damage(attackDamage);
+
+            Release();
         }
 
         public void Damage(float amount)
@@ -96,7 +103,7 @@ namespace TowerDefense
             currentHealth -= amount;
 
             if (currentHealth <= 0)
-                IsPause = false;
+                Release();
         }
 
         public void AddEffectStatus<T>(float baseDamage, T effect) where T : Effect

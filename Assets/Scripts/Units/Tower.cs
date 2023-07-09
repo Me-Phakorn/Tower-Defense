@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 namespace TowerDefense
 {
@@ -9,6 +10,11 @@ namespace TowerDefense
     public class Tower : MonoBehaviour, ITowerSetting
     {
         [Header("Tower Setting")]
+        [SerializeField]
+        private EnemyType targetType;
+        [SerializeField]
+        private TowerAimType aimType;
+
         [SerializeField, Range(1, 10)]
         private int attackDamage = 1;
         [SerializeField, Range(0.1f, 5f)]
@@ -33,7 +39,10 @@ namespace TowerDefense
 
         public Transform ProjectileSpot => projectileSpot;
 
-        private List<Enemy> enemies = new List<Enemy>();
+        public EnemyType TargetType => targetType;
+        public TowerAimType AimType => aimType;
+
+        public List<Enemy> enemies = new List<Enemy>();
 
         private float shootTimer = 0;
 
@@ -51,38 +60,82 @@ namespace TowerDefense
             shootTimer = 0;
         }
 
+        private void Start()
+        {
+            var _Range = GetComponent<SphereCollider>();
+            _Range.radius = attackRange;
+
+            shootTimer = 0;
+        }
+
         public Enemy GetEnemyTarget()
         {
-            return enemies[0];
+            var _enemies = enemies.Where(e => !e.IsDie && e.gameObject.activeSelf);
+            enemies = _enemies.ToList();
+
+            switch (aimType)
+            {
+                case TowerAimType.Farthest:
+                    {
+                        return _enemies.OrderByDescending(e => Vector3.Distance(e.transform.position, transform.position)).FirstOrDefault();
+                    }
+                case TowerAimType.Farthest_Less_Health:
+                    {
+                        return _enemies.OrderByDescending(e => Vector3.Distance(e.transform.position, transform.position))
+                         .ThenBy(e => e.CurrentHealth).FirstOrDefault();
+                    }
+                case TowerAimType.Farthest_Most_Health:
+                    {
+                        return _enemies.OrderByDescending(e => Vector3.Distance(e.transform.position, transform.position))
+                        .ThenByDescending(e => e.CurrentHealth).FirstOrDefault();
+                    }
+                case TowerAimType.Nearest:
+                    {
+                        return _enemies.OrderBy(e => Vector3.Distance(e.transform.position, transform.position)).FirstOrDefault();
+                    }
+                case TowerAimType.Nearest_Less_Health:
+                    {
+                        return _enemies.OrderBy(e => Vector3.Distance(e.transform.position, transform.position))
+                         .ThenBy(e => e.CurrentHealth).FirstOrDefault();
+                    }
+                case TowerAimType.Nearest_Most_Health:
+                    {
+                        return _enemies.OrderBy(e => Vector3.Distance(e.transform.position, transform.position))
+                        .ThenByDescending(e => e.CurrentHealth).FirstOrDefault();
+                    }
+                default:
+                    return null;
+            }
         }
 
         private void Update()
         {
-            if (IsPause || !IsEnemies)
+            if (IsPause)
                 return;
 
             shootTimer += Time.deltaTime;
             if (shootTimer >= fireRate)
             {
-                shootTimer = 0;
-                ExecuteProjectile();
+                if (IsEnemies)
+                    ExecuteProjectile();
             }
         }
 
         private void ExecuteProjectile()
         {
+            shootTimer = 0;
             projectile?.Shoot<Tower>(this);
         }
 
         private void OnTriggerEnter(Collider enemy)
         {
-            if (enemy.CompareTag("Enemy") && enemies != null)
+            if (enemy.CompareTag("Enemy"))
                 enemies.Add(enemy.GetComponent<Enemy>());
         }
 
         private void OnTriggerExit(Collider enemy)
         {
-            if (enemy.CompareTag("Enemy") && enemies != null)
+            if (enemy.CompareTag("Enemy"))
                 enemies.Remove(enemy.GetComponent<Enemy>());
         }
     }

@@ -2,9 +2,11 @@ namespace TowerDefense
 {
     public interface IEnemySetting
     {
+        EnemyType Type { get; }
+
         int AttackDamage { get; }
 
-        float BaseHealth { get; }
-        float BaseSpeed { get; }
+        float BaseHealth { set; get; }
+        float BaseSpeed { set; get; }
     }
 }

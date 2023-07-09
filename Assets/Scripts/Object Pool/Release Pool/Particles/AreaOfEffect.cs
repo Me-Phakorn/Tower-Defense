@@ -41,7 +41,7 @@ namespace TowerDefense.Projectiles
 
         public void ApplyEffect()
         {
-            RaycastHit[] hits = Physics.SphereCastAll(transform.position, effectRange, transform.forward);
+            RaycastHit[] hits = Physics.SphereCastAll(transform.position, effectRange, transform.up);
             Enemy[] enemies = hits.Where(h => h.collider.CompareTag("Enemy")).Select(h => h.collider.GetComponent<Enemy>()).ToArray();
 
             if (enemies.Length == 0)
@@ -62,6 +62,12 @@ namespace TowerDefense.Projectiles
             yield return new WaitForSeconds(particle.main.duration + 0.5f);
 
             Release();
+        }
+
+        void OnDrawGizmosSelected()
+        {
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawSphere(transform.position, effectRange);
         }
     }
 }

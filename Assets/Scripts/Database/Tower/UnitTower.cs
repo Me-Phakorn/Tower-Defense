@@ -18,6 +18,11 @@ namespace TowerDefense.Database
         [SerializeField]
         private Projectile projectile;
 
+        [SerializeField]
+        private EnemyType targetType;
+        [SerializeField]
+        private TowerAimType aimType;
+
         [SerializeField, Range(1, 10)]
         private int attackDamage = 1;
 
@@ -30,10 +35,12 @@ namespace TowerDefense.Database
 
         public Projectile Projectile => projectile;
 
+        public EnemyType TargetType => targetType;
+
+        public TowerAimType AimType => aimType;
+
         public float FireRate => fireRate;
         public int AttackRange => attackRange;
         public int AttackDamage => attackDamage;
-
-
     }
 }

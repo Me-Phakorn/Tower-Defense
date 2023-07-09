@@ -49,7 +49,7 @@ namespace TowerDefense.Projectiles
 
         private IEnumerator Mover(Enemy target)
         {
-            while (target.transform.position != transform.position)
+            while (Vector3.Distance(target.transform.position, transform.position) > 0.1f)
             {
                 transform.position = Vector3.MoveTowards(transform.position, target.transform.position, Time.deltaTime * speed);
 

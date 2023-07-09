@@ -17,5 +17,5 @@ MonoBehaviour:
   muzzlePrefab: {fileID: 0}
   projectilePrefab: {fileID: 4023903094157716264, guid: e27dfff1d65a05146b8cf80c427e737e, type: 3}
   multipleDamage: 1
-  projectileSpeed: 9.05
+  projectileSpeed: 20
   effect: {fileID: 0}

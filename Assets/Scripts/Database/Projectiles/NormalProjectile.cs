@@ -13,6 +13,9 @@ namespace TowerDefense.Database
         {
             var enemy = source.GetEnemyTarget();
 
+            if (!enemy)
+                return;
+
             var _sourcePos = source.ProjectileSpot.position;
             var _sourceRot = Quaternion.LookRotation(enemy.transform.position - _sourcePos);
 
