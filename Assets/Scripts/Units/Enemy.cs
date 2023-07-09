@@ -38,6 +38,13 @@ namespace TowerDefense
 
         public EnemyType Type => type;
 
+        private Animator animator;
+
+        private void Awake()
+        {
+            animator = GetComponentInChildren<Animator>();
+        }
+
         public void Initialize(IEnemySetting setting, Transform[] waypoints, IDamageable target)
         {
             maximumHealth = setting.BaseHealth;
@@ -52,6 +59,9 @@ namespace TowerDefense
 
             effectStacks = new List<Effect.Stack>();
             GetComponent<Collider>().enabled = true;
+
+            animator.SetTrigger("Idle");
+            animator.SetBool("Walk", true);
 
             IsPause = false;
 
@@ -85,7 +95,12 @@ namespace TowerDefense
             }
 
             if (currentWaypointIndex < waypoints.Length)
+            {
                 transform.position = Vector3.MoveTowards(transform.position, waypoints[currentWaypointIndex].position, (movementSpeed * Time.deltaTime) / 2);
+
+                if (waypoints[currentWaypointIndex].position - transform.position != Vector3.zero)
+                    transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(waypoints[currentWaypointIndex].position - transform.position), Time.deltaTime * 5);
+            }
         }
 
         private void DestroyTower()
@@ -103,10 +118,13 @@ namespace TowerDefense
 
             currentHealth -= amount;
 
-            if (currentHealth <= 0)
+            if (currentHealth <= 0 && !IsPause)
             {
+                IsPause = false;
+
                 GetComponent<Collider>().enabled = false;
-                Release();
+                animator.SetTrigger("Die");
+                Invoke("Release", 2);
             }
         }
 

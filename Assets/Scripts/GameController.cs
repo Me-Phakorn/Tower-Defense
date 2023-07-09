@@ -120,7 +120,7 @@ namespace TowerDefense
 
             for (int i = 0; i < enemiesPreWave; i++)
             {
-                var _obj = ObjectPool.GetPool(_enemy.gameObject, wayPoints[0].position, Quaternion.identity);
+                var _obj = ObjectPool.GetPool(_enemy.gameObject, wayPoints[0].position, Quaternion.LookRotation(wayPoints[1].position - wayPoints[0].position));
                 _obj.GetComponent<Enemy>().Initialize(levelCondition.GetEnemySetting(this, _enemy), wayPoints, stronghold);
 
                 yield return new WaitForSeconds(enemyFrequency);
