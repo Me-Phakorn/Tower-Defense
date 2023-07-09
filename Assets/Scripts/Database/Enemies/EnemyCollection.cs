@@ -8,7 +8,7 @@ namespace TowerDefense.Database
     public class EnemyCollection : ScriptableObject
     {
         [System.Serializable]
-        public class Collection : IEnemySetting
+        public struct Collection : IEnemySetting
         {
             [SerializeField]
             private Enemy enemy;

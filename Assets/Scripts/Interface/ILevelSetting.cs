@@ -8,6 +8,6 @@ namespace TowerDefense.Setting
         float GameSpeed { get; }
 
         float GameTime { get; set; }
-        float GameWave { get; set; }
+        int GameWave { get; set; }
     }
 }

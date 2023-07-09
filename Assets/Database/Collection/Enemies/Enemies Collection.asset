@@ -18,13 +18,3 @@ MonoBehaviour:
     baseDamage: 1
     baseHealth: 30
     baseSpeed: 5
-  - enemy: {fileID: 3981503720672088453, guid: 9e9b112dfd8d1424f932aa502524f94f, type: 3}
-    enemyType: 1
-    baseDamage: 3
-    baseHealth: 50
-    baseSpeed: 3
-  - enemy: {fileID: 3981503720672088453, guid: 9e9b112dfd8d1424f932aa502524f94f, type: 3}
-    enemyType: 2
-    baseDamage: 10
-    baseHealth: 50
-    baseSpeed: 1

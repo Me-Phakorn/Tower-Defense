@@ -40,15 +40,17 @@ namespace TowerDefense.Projectiles
             this.finalDamage = finalDamage;
         }
 
-        public void Shoot(Enemy target)
+        public void Shoot(EnemyType type, Enemy target)
         {
             if (projectileMover != null)
                 StopCoroutine(projectileMover);
-            StartCoroutine(projectileMover = Mover(target));
+            StartCoroutine(projectileMover = Mover(type, target));
         }
 
-        private IEnumerator Mover(Enemy target)
+        private IEnumerator Mover(EnemyType type, Enemy target)
         {
+            Debug.DrawLine(transform.position, target.transform.position, Color.red, 3f);
+
             while (Vector3.Distance(target.transform.position, transform.position) > 0.1f)
             {
                 transform.position = Vector3.MoveTowards(transform.position, target.transform.position, Time.deltaTime * speed);
@@ -62,18 +64,19 @@ namespace TowerDefense.Projectiles
 
             var impactAOE = ObjectPool.GetPool(impactPrefab, target.transform.position, Quaternion.identity).GetComponent<AreaOfEffect>();
 
+            float _finalDamage = (type == target.Type) ? finalDamage + (finalDamage * 0.5f) : finalDamage; // Add damage 50% at same type
+
             if (!impactAOE)
             {
-                ((IDamageable)target).Damage(finalDamage);
+                ((IDamageable)target).Damage(_finalDamage);
                 effect?.ApplyEffect(baseDamage, new Enemy[] { target });
             }
             else
             {
                 impactAOE.transform.localScale = Vector3.one;
-                impactAOE.Initialize(effect, baseDamage, finalDamage, effectRange);
+                impactAOE.Initialize(effect, baseDamage, _finalDamage, effectRange);
                 impactAOE.ApplyEffect();
             }
-
 
             Release();
         }

@@ -27,7 +27,7 @@ namespace TowerDefense.Database
                 var _projectile = ObjectPool.GetPool(projectilePrefab, _sourcePos, _sourceRot);
 
                 _projectile.GetComponent<ProjectileMover>().Initialize(effect, 0, source.AttackDamage, source.AttackDamage * multipleDamage, projectileSpeed);
-                _projectile.GetComponent<ProjectileMover>().Shoot(enemy);
+                _projectile.GetComponent<ProjectileMover>().Shoot(source.TargetType, enemy);
             }
         }
 

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyCollection: {fileID: 11400000, guid: aadd4611d5bc58d47ab1277e8f44a4f5, type: 2}
   enemyFrequency: 0.25
-  wavePerTime: 60
+  wavePerTime: 15
   enemiesPreWave: 10
   conditionType: 0
   powerUpPercent: 0.5

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using TowerDefense.Pooling;
 using TowerDefense.Projectiles;
 using UnityEngine;
@@ -34,7 +32,7 @@ namespace TowerDefense.Database
 
                 _projectile.GetComponent<ProjectileMover>().Initialize(effect, bombRange,
                     source.AttackDamage, (source.AttackDamage * multipleDamage) * (damagePercent / 100), projectileSpeed);
-                _projectile.GetComponent<ProjectileMover>().Shoot(enemy);
+                _projectile.GetComponent<ProjectileMover>().Shoot(source.TargetType, enemy);
             }
         }
 

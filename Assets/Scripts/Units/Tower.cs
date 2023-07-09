@@ -70,8 +70,10 @@ namespace TowerDefense
 
         public Enemy GetEnemyTarget()
         {
+            RaycastHit[] hits = Physics.SphereCastAll(transform.position, attackRange, transform.up);
+            enemies = hits.Where(h => h.collider.CompareTag("Enemy")).Select(h => h.collider.GetComponent<Enemy>()).ToList();
+
             var _enemies = enemies.Where(e => !e.IsDie && e.gameObject.activeSelf);
-            enemies = _enemies.ToList();
 
             switch (aimType)
             {
@@ -116,27 +118,18 @@ namespace TowerDefense
             shootTimer += Time.deltaTime;
             if (shootTimer >= fireRate)
             {
-                if (IsEnemies)
-                    ExecuteProjectile();
+                shootTimer = 0;
+                ExecuteProjectile();
             }
+
+            var _enemy = GetEnemyTarget();
+            if (_enemy)
+                projectileSpot.rotation = Quaternion.LookRotation((_enemy.transform.position - projectileSpot.position).normalized);
         }
 
         private void ExecuteProjectile()
         {
-            shootTimer = 0;
             projectile?.Shoot<Tower>(this);
-        }
-
-        private void OnTriggerEnter(Collider enemy)
-        {
-            if (enemy.CompareTag("Enemy"))
-                enemies.Add(enemy.GetComponent<Enemy>());
-        }
-
-        private void OnTriggerExit(Collider enemy)
-        {
-            if (enemy.CompareTag("Enemy"))
-                enemies.Remove(enemy.GetComponent<Enemy>());
         }
     }
 

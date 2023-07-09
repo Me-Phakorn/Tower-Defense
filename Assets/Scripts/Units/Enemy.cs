@@ -51,6 +51,7 @@ namespace TowerDefense
             this.waypoints = waypoints;
 
             effectStacks = new List<Effect.Stack>();
+            GetComponent<Collider>().enabled = true;
 
             IsPause = false;
 
@@ -103,7 +104,10 @@ namespace TowerDefense
             currentHealth -= amount;
 
             if (currentHealth <= 0)
+            {
+                GetComponent<Collider>().enabled = false;
                 Release();
+            }
         }
 
         public void AddEffectStatus<T>(float baseDamage, T effect) where T : Effect

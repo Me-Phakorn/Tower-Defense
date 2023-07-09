@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TowerDefense.Pooling;
 using TowerDefense.Setting;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace TowerDefense
 {
@@ -27,19 +28,29 @@ namespace TowerDefense
 
         [Header("Runtime")]
         [SerializeField] private float totalTimer = 0;
-        [SerializeField] private float totalWave = 1;
+        [SerializeField] private int totalWave = 1;
+
+        [SerializeField]
+        private UnityEvent<int> onNextWave;
 
         public float GameSpeed => gameSpeed;
 
+        private bool isStart = false;
+        public bool IsStart => isStart;
+
         public bool IsLose => stronghold.IsDestroy;
 
-        private bool isPause;
+        private bool isPause = false;
         public bool IsPause => isPause;
 
         public float GameTime { get => totalTimer; set { totalTimer = value; } }
-        public float GameWave { get => totalWave; set { totalWave = value; } }
+        public int GameWave { get => totalWave; set { totalWave = value; } }
+
+        private float timer = 0;
 
         private List<Enemy> enemies = new List<Enemy>();
+
+        private IEnumerator enemiesAttack;
 
         private void Start()
         {
@@ -56,8 +67,32 @@ namespace TowerDefense
 
             totalTimer = 0;
             totalWave = 1;
+            timer = 0;
 
-            StartCoroutine(EnemiesAttack());
+            StartCoroutine(enemiesAttack = EnemiesAttack());
+
+            isStart = true;
+        }
+
+        private void Update()
+        {
+            if (IsPause || !IsStart)
+                return;
+
+            timer += Time.deltaTime;
+            totalTimer += Time.deltaTime;
+
+            if (timer >= wavePerTime)
+                NextWave();
+        }
+
+        private void NextWave()
+        {
+            timer = 0;
+            totalWave++;
+
+            onNextWave?.Invoke(totalWave);
+            StartCoroutine(enemiesAttack = EnemiesAttack());
         }
 
         public void GamePause(bool isPause)
@@ -82,16 +117,6 @@ namespace TowerDefense
         private IEnumerator EnemiesAttack()
         {
             var _enemy = levelCondition.GetRandomEnemy();
-
-            for (int i = 0; i < enemiesPreWave; i++)
-            {
-                var _obj = ObjectPool.GetPool(_enemy.gameObject, wayPoints[0].position, Quaternion.identity);
-                _obj.GetComponent<Enemy>().Initialize(levelCondition.GetEnemySetting(this, _enemy), wayPoints, stronghold);
-
-                yield return new WaitForSeconds(enemyFrequency);
-            }
-
-            yield return new WaitForSeconds(20);
 
             for (int i = 0; i < enemiesPreWave; i++)
             {
