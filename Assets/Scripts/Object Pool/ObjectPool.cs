@@ -94,6 +94,11 @@ namespace TowerDefense.Pooling
             poolList.Remove(hashCode);
         }
 
+        public static void ClearAll()
+        {
+            poolList.Clear();
+        }
+
         public static bool IsPool(int hashCode)
         {
             ObjectPool<GameObject> _value;

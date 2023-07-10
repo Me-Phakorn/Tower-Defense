@@ -26,6 +26,9 @@ namespace TowerDefense.Database
         [SerializeField]
         private TowerAimType aimType;
 
+        [SerializeField]
+        private int towerPrice = 0;
+
         [SerializeField, Range(1, 10)]
         private int attackDamage = 1;
 
@@ -47,5 +50,7 @@ namespace TowerDefense.Database
         public float FireRate => fireRate;
         public int AttackRange => attackRange;
         public int AttackDamage => attackDamage;
+
+        public int TowerPrice => towerPrice;
     }
 }

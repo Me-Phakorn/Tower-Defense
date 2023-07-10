@@ -16,12 +16,20 @@ namespace TowerDefense.UI
         [SerializeField]
         private RectTransform towerUITarget;
 
+        [SerializeField]
+        private GameObject gameOverPanel;
+
         public void SetupTowerUI(UnitTower[] unitTowers)
         {
             foreach (var item in unitTowers)
                 Instantiate(towerUIPrefab, towerUITarget).SetupUI(item);
 
             Invoke("DisableLayoutGroup", 0.1f);
+        }
+
+        public void GameOver()
+        {
+            gameOverPanel.SetActive(true);
         }
 
         private void DisableLayoutGroup()

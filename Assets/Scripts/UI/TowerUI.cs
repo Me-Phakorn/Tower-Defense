@@ -33,6 +33,9 @@ namespace TowerDefense.UI
             {
                 originPosition = ((RectTransform)transform).localPosition;
 
+                if (GameController.Instance.Money < tower.TowerPrice)
+                    return;
+
                 ((RectTransform)transform).localPosition = new Vector2(originPosition.x, originPosition.y + 50);
             }
         }
@@ -51,13 +54,16 @@ namespace TowerDefense.UI
             damageUI.text = tower.AttackDamage.ToString();
             rangeUI.text = tower.AttackRange.ToString();
             firerateUI.text = tower.FireRate.ToString();
-            // priceUI.text = tower.AttackDamage.ToString();
+            priceUI.text = tower.TowerPrice.ToString();
 
             iconImage.sprite = tower.UnitIcon;
         }
 
         public void OnBeginDrag(PointerEventData eventData)
         {
+            if (GameController.Instance.Money < tower.TowerPrice)
+                return;
+
             IsDrag = true;
 
             GetComponentInParent<HorizontalLayoutGroup>().enabled = false;
@@ -65,19 +71,25 @@ namespace TowerDefense.UI
 
         public void OnDrag(PointerEventData eventData)
         {
+            if (GameController.Instance.Money < tower.TowerPrice)
+                return;
+
             currentPosition = eventData.position;
             ((RectTransform)transform).position = currentPosition;
         }
 
         public void OnDrop(PointerEventData eventData)
         {
+            if (GameController.Instance.Money < tower.TowerPrice)
+                return;
+
             Ray ray = Camera.main.ScreenPointToRay(eventData.position);
 
             Debug.DrawRay(ray.origin, ray.direction * 20, Color.blue, 3);
 
             RaycastHit[] hits = Physics.RaycastAll(ray, 20).Where(r => r.collider.CompareTag("Base")).ToArray();
             if (hits.Length == 1)
-                hits[0].collider.GetComponent<TowerBase>()?.Construction(tower.UnitPrefab, tower);
+                hits[0].collider.GetComponent<TowerBase>()?.Construction(tower.UnitPrefab,tower.TowerPrice, tower);
 
             ((RectTransform)transform).localPosition = originPosition;
 

@@ -15,16 +15,19 @@ MonoBehaviour:
   enemies:
   - enemy: {fileID: 3981503720672088453, guid: 9e9b112dfd8d1424f932aa502524f94f, type: 3}
     enemyType: 0
+    monsterMoney: 15
     baseDamage: 1
     baseHealth: 30
     baseSpeed: 5
   - enemy: {fileID: 5533290148075676169, guid: dc84843bc709e67438c3ad2587613571, type: 3}
     enemyType: 1
+    monsterMoney: 20
     baseDamage: 3
     baseHealth: 50
     baseSpeed: 3
   - enemy: {fileID: 2800754253381207442, guid: a1a72407d3fc5ac49a969cbb7552172c, type: 3}
     enemyType: 2
+    monsterMoney: 30
     baseDamage: 10
     baseHealth: 100
     baseSpeed: 1

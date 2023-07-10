@@ -19,6 +19,7 @@ MonoBehaviour:
   projectile: {fileID: 11400000, guid: 6afc22b570be4ac468f5c18b7d4d3117, type: 2}
   targetType: 2
   aimType: 1
+  towerPrice: 75
   attackDamage: 1
   fireRate: 1
   attackRange: 3

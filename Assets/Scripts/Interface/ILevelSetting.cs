@@ -4,6 +4,8 @@ namespace TowerDefense.Setting
     {
         bool IsLose { get; }
         bool IsPause { get; }
+        int Health { get; }
+        int Money { get; }
 
         float GameSpeed { get; }
 

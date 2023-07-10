@@ -11,6 +11,9 @@ namespace TowerDefense.Setting
         protected EnemyCollection enemyCollection;
 
         [SerializeField]
+        protected int moneyPerWave = 200;
+
+        [SerializeField]
         protected float enemyFrequency = 0.5f;
 
         [SerializeField]
@@ -22,6 +25,7 @@ namespace TowerDefense.Setting
         public float EnemyFrequency => enemyFrequency;
         public float WavePerTime => wavePerTime;
         public int EnemiesPreWave => enemiesPreWave;
+        public int MoneyPerWave => moneyPerWave;
 
         public Enemy GetEnemy(int index)
         {

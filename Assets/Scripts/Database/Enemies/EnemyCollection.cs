@@ -17,6 +17,9 @@ namespace TowerDefense.Database
             private EnemyType enemyType;
 
             [SerializeField]
+            private int monsterMoney;
+
+            [SerializeField]
             private int baseDamage;
             [SerializeField]
             private float baseHealth;
@@ -31,6 +34,8 @@ namespace TowerDefense.Database
 
             public float BaseHealth { get => baseHealth; set { baseHealth = value; } }
             public float BaseSpeed { get => baseSpeed; set { baseSpeed = value; } }
+
+            public int MonsterMoney => monsterMoney;
         }
 
         [SerializeField]

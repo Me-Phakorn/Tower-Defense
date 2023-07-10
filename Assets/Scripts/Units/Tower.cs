@@ -42,6 +42,9 @@ namespace TowerDefense
         public EnemyType TargetType => targetType;
         public TowerAimType AimType => aimType;
 
+        private int towerPrice = 0;
+        public int TowerPrice => towerPrice;
+
         public List<Enemy> enemies = new List<Enemy>();
 
         private float shootTimer = 0;
@@ -53,6 +56,9 @@ namespace TowerDefense
             attackDamage = setting.AttackDamage;
             attackRange = setting.AttackRange;
             fireRate = setting.FireRate;
+
+            targetType = setting.TargetType;
+            aimType = setting.AimType;
 
             var _Range = GetComponent<SphereCollider>();
             _Range.radius = attackRange;

@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Enemies Power Up Condition
   m_EditorClassIdentifier: 
   enemyCollection: {fileID: 11400000, guid: aadd4611d5bc58d47ab1277e8f44a4f5, type: 2}
+  moneyPerWave: 100
   enemyFrequency: 0.5
   wavePerTime: 60
   enemiesPreWave: 10

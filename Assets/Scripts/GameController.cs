@@ -6,11 +6,10 @@ using TowerDefense.Setting;
 using TowerDefense.UI;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 namespace TowerDefense
 {
-    public delegate void OnEnemyCallback(Enemy enemy);
-
     public class GameController : MonoBehaviour, ILevelSetting
     {
         private static GameController instance;
@@ -28,17 +27,23 @@ namespace TowerDefense
         [SerializeField] private Transform[] wayPoints;
 
         [Header("Game Setting")]
+        [SerializeField] private int strongholdHealth = 100;
         [SerializeField, Range(1, 3)] private float gameSpeed = 1;
         [SerializeField] private float enemyFrequency = 0;
+        [SerializeField] private int startMoney = 300;
+        [SerializeField] private int moneyPerWave = 0;
         [SerializeField] private float wavePerTime = 0;
         [SerializeField] private float enemiesPreWave = 0;
 
         [Header("Runtime")]
+        [SerializeField] private int totalMoney = 1;
         [SerializeField] private float totalTimer = 0;
         [SerializeField] private int totalWave = 1;
 
         [Space, SerializeField]
         private UnityEvent<int> onNextWave;
+        [Space, SerializeField]
+        private UnityEvent<int> onMoneyUpdate;
 
         public float GameSpeed => gameSpeed;
 
@@ -53,6 +58,9 @@ namespace TowerDefense
         public float GameTime { get => totalTimer; set { totalTimer = value; } }
         public int GameWave { get => totalWave; set { totalWave = value; } }
 
+        public int Money => totalMoney;
+        public int Health => stronghold.Health;
+
         private float timer = 0;
 
         private List<Enemy> enemies = new List<Enemy>();
@@ -66,9 +74,17 @@ namespace TowerDefense
 
         private void Start()
         {
+            ObjectPool.ClearAll();
+
             UIManager.SetupTowerUI(towerCollection.ToArray());
 
-            Invoke("OnGameStart", 5);
+            totalTimer = 0;
+            totalWave = 1;
+            timer = 0;
+
+            AddMoney(startMoney);
+
+            stronghold.Setup(strongholdHealth);
         }
 
         public void OnGameStart()
@@ -76,14 +92,11 @@ namespace TowerDefense
             wavePerTime = levelCondition.WavePerTime;
             enemiesPreWave = levelCondition.EnemiesPreWave;
             enemyFrequency = levelCondition.EnemyFrequency;
+            moneyPerWave = levelCondition.MoneyPerWave;
 
             ChangeSpeed(1);
 
-            totalTimer = 0;
-            totalWave = 1;
-            timer = 0;
-
-            StartCoroutine(enemiesAttack = EnemiesAttack());
+            StartCoroutine(enemiesAttack = EnemiesAttack(5));
 
             isStart = true;
         }
@@ -107,6 +120,8 @@ namespace TowerDefense
 
             onNextWave?.Invoke(totalWave);
             StartCoroutine(enemiesAttack = EnemiesAttack());
+
+            AddMoney(moneyPerWave);
         }
 
         public void GamePause(bool isPause)
@@ -128,9 +143,44 @@ namespace TowerDefense
             Time.timeScale = gameSpeed;
         }
 
-        private IEnumerator EnemiesAttack()
+        public void AddMoney(int amount)
+        {
+            totalMoney += amount;
+
+            onMoneyUpdate.Invoke(totalMoney);
+        }
+
+        public bool PayTower(int price)
+        {
+            if (price > totalMoney)
+                return false;
+
+            totalMoney -= price;
+            onMoneyUpdate.Invoke(totalMoney);
+            return true;
+        }
+
+        public void GameOver()
+        {
+            if (isPause)
+                return;
+
+            isPause = true;
+            isStart = false;
+
+            UIManager.GameOver();
+        }
+
+        public void GameRestart()
+        {
+            SceneManager.LoadScene("Tower Battle");
+        }
+
+        private IEnumerator EnemiesAttack(int delay = 0)
         {
             var _enemy = levelCondition.GetRandomEnemy();
+
+            yield return new WaitForSeconds(delay);
 
             for (int i = 0; i < enemiesPreWave; i++)
             {
@@ -139,11 +189,6 @@ namespace TowerDefense
 
                 yield return new WaitForSeconds(enemyFrequency);
             }
-        }
-
-        private void OnEnemyDie(Enemy enemy)
-        {
-
         }
     }
 }

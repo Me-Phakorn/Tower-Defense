@@ -19,7 +19,7 @@ namespace TowerDefense.UI
 
         private void Update()
         {
-            if (!gameController || !gameController.IsStart)
+            if (!gameController)
                 return;
 
             TimeSpan time = TimeSpan.FromSeconds(gameController.GameTime);

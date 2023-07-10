@@ -1,23 +1,43 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace TowerDefense
 {
-    public class Stronghold : MonoBehaviour , IDamageable
+    public class Stronghold : MonoBehaviour, IDamageable
     {
         [Header("Setting")]
-        [SerializeField] private float MaximumHealth = 100;
+        [SerializeField] private int maximumHealth = 100;
 
-        private float currentHealth = 100;
+        [SerializeField]
+        private int currentHealth = 100;
 
-        public float Damages => 0;
-        public float Health => currentHealth;
-        public float MaxHealth => MaximumHealth;
+        public int Health => currentHealth;
+        public int MaxHealth => maximumHealth;
 
         public bool IsDestroy => currentHealth <= 0;
 
+        [Space, SerializeField]
+        private UnityEvent<int> onHealthUpdate;
+
+        public void Setup(int maximumHealth)
+        {
+            this.maximumHealth = maximumHealth;
+            currentHealth = maximumHealth;
+
+            onHealthUpdate?.Invoke(currentHealth);
+        }
+
         public void Damage(float amount)
         {
-            currentHealth -= amount;
+            currentHealth -= Mathf.CeilToInt(amount);
+
+            if(currentHealth < 0)
+                currentHealth = 0;
+
+            if (IsDestroy)
+                GameController.Instance?.GameOver();
+
+            onHealthUpdate?.Invoke(currentHealth);
         }
     }
 }

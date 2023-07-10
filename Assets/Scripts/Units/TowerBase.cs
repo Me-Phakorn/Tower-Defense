@@ -10,9 +10,12 @@ namespace TowerDefense
         [SerializeField]
         private Tower tower;
 
-        public bool Construction(Tower towerPrefab, ITowerSetting setting)
+        public bool Construction(Tower towerPrefab, int towerPrice, ITowerSetting setting)
         {
             if (tower != null)
+                return false;
+
+            if (!GameController.Instance.PayTower(towerPrice))
                 return false;
 
             tower = Instantiate(towerPrefab, transform);

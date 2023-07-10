@@ -18,6 +18,8 @@ namespace TowerDefense
         private float currentHealth = 100;
         private float baseSpeed = 5f;
 
+        private int monsterMoney = 0;
+
         private Transform[] waypoints;
 
         private int currentWaypointIndex = 0;
@@ -28,6 +30,8 @@ namespace TowerDefense
         public bool HasPath => waypoints != null && waypoints.Length > 0;
 
         public float CurrentHealth => currentHealth;
+
+        public int MonsterMoney => monsterMoney;
 
         private IDamageable target;
 
@@ -40,25 +44,34 @@ namespace TowerDefense
 
         private Animator animator;
 
+        private Collider _collider;
+
         private void Awake()
         {
             animator = GetComponentInChildren<Animator>();
+            _collider = GetComponent<Collider>();
         }
 
         public void Initialize(IEnemySetting setting, Transform[] waypoints, IDamageable target)
         {
+            this.target = target;
+
+            attackDamage = setting.AttackDamage;
+
             maximumHealth = setting.BaseHealth;
             currentHealth = maximumHealth;
 
             baseSpeed = setting.BaseSpeed;
             movementSpeed = baseSpeed;
 
+            monsterMoney = setting.MonsterMoney;
+
             currentWaypointIndex = 0;
 
             this.waypoints = waypoints;
 
             effectStacks = new List<Effect.Stack>();
-            GetComponent<Collider>().enabled = true;
+            _collider.enabled = true;
 
             animator.SetTrigger("Idle");
             animator.SetBool("Walk", true);
@@ -122,7 +135,9 @@ namespace TowerDefense
             {
                 IsPause = false;
 
-                GetComponent<Collider>().enabled = false;
+                GameController.Instance?.AddMoney(monsterMoney);
+
+                _collider.enabled = false;
                 animator.SetTrigger("Die");
                 Invoke("Release", 2);
             }
