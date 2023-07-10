@@ -96,10 +96,10 @@ namespace TowerDefense
 
             if (currentWaypointIndex < waypoints.Length)
             {
-                transform.position = Vector3.MoveTowards(transform.position, waypoints[currentWaypointIndex].position, (movementSpeed * Time.deltaTime) / 2);
+                transform.position = Vector3.MoveTowards(transform.position, waypoints[currentWaypointIndex].position, movementSpeed * Time.deltaTime);
 
                 if (waypoints[currentWaypointIndex].position - transform.position != Vector3.zero)
-                    transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(waypoints[currentWaypointIndex].position - transform.position), Time.deltaTime * 5);
+                    transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(waypoints[currentWaypointIndex].position - transform.position), Time.deltaTime * 7);
             }
         }
 

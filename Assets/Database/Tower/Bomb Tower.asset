@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3908a7572cb294745b7e044ce68d22cf, type: 3}
+  m_Name: Bomb Tower
+  m_EditorClassIdentifier: 
+  towerName: Bomb Tower
+  description: 
+  unitPrefab: {fileID: 8008366800441474789, guid: d0860dd898078fe4d92c7197cdba8d14, type: 3}
+  unitIcon: {fileID: 21300000, guid: 8ab269b0b909a9b439316f41795176c1, type: 3}
+  projectile: {fileID: 11400000, guid: 97a5a5a06a9e2d84cbe8239507fdecd3, type: 2}
+  targetType: 1
+  aimType: 5
+  attackDamage: 10
+  fireRate: 2
+  attackRange: 5

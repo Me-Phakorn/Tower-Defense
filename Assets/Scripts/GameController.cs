@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using TowerDefense.Database;
 using TowerDefense.Pooling;
 using TowerDefense.Setting;
+using TowerDefense.UI;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -12,10 +14,12 @@ namespace TowerDefense
     public class GameController : MonoBehaviour, ILevelSetting
     {
         [Header("Level Setting")]
+        [SerializeField] private List<UnitTower> towerCollection;
         [SerializeField] private LevelCondition levelCondition;
 
         [Header("Component")]
         [SerializeField] private Stronghold stronghold;
+        [SerializeField] private UIManager UIManager;
 
         [Header("Setting")]
         [SerializeField] private Transform[] wayPoints;
@@ -54,7 +58,9 @@ namespace TowerDefense
 
         private void Start()
         {
-            OnGameStart();
+            UIManager.SetupTowerUI(towerCollection.ToArray());
+
+            Invoke("OnGameStart", 5);
         }
 
         public void OnGameStart()

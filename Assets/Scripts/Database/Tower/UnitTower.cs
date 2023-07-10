@@ -12,7 +12,10 @@ namespace TowerDefense.Database
         [TextArea] public string description;
 
         [SerializeField]
-        private GameObject unitPrefab;
+        public Tower unitPrefab;
+
+        [SerializeField]
+        private Sprite unitIcon;
 
         [Header("Tower Setting")]
         [SerializeField]
@@ -31,7 +34,9 @@ namespace TowerDefense.Database
         [SerializeField, Range(3, 7)]
         private int attackRange = 3;
 
-        public GameObject UnitPrefab => unitPrefab;
+        public Sprite UnitIcon => unitIcon;
+
+        public Tower UnitPrefab => unitPrefab;
 
         public Projectile Projectile => projectile;
 
