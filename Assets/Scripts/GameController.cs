@@ -13,6 +13,9 @@ namespace TowerDefense
 
     public class GameController : MonoBehaviour, ILevelSetting
     {
+        private static GameController instance;
+        public static GameController Instance => instance;
+
         [Header("Level Setting")]
         [SerializeField] private List<UnitTower> towerCollection;
         [SerializeField] private LevelCondition levelCondition;
@@ -34,7 +37,7 @@ namespace TowerDefense
         [SerializeField] private float totalTimer = 0;
         [SerializeField] private int totalWave = 1;
 
-        [SerializeField]
+        [Space, SerializeField]
         private UnityEvent<int> onNextWave;
 
         public float GameSpeed => gameSpeed;
@@ -55,6 +58,11 @@ namespace TowerDefense
         private List<Enemy> enemies = new List<Enemy>();
 
         private IEnumerator enemiesAttack;
+
+        private void Awake()
+        {
+            instance = this;
+        }
 
         private void Start()
         {
@@ -85,8 +93,8 @@ namespace TowerDefense
             if (IsPause || !IsStart)
                 return;
 
-            timer += Time.deltaTime;
-            totalTimer += Time.deltaTime;
+            timer += Time.deltaTime * gameSpeed;
+            totalTimer += Time.deltaTime * gameSpeed;
 
             if (timer >= wavePerTime)
                 NextWave();
