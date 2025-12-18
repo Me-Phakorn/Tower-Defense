@@ -15,7 +15,7 @@ namespace TowerDefense
         [SerializeField]
         private TowerAimType aimType;
 
-        [SerializeField, Range(1, 10)]
+        [SerializeField, Range(1, 30)]
         private int attackDamage = 1;
         [SerializeField, Range(0.1f, 5f)]
         private float fireRate = 1;
@@ -61,7 +61,11 @@ namespace TowerDefense
             aimType = setting.AimType;
 
             var _Range = GetComponent<SphereCollider>();
-            _Range.radius = attackRange;
+            if (_Range != null)
+            {
+                _Range.radius = attackRange;
+                _Range.isTrigger = false;
+            }
 
             shootTimer = 0;
         }
@@ -69,51 +73,162 @@ namespace TowerDefense
         private void Start()
         {
             var _Range = GetComponent<SphereCollider>();
-            _Range.radius = attackRange;
+            if (_Range != null)
+            {
+                _Range.radius = attackRange;
+                _Range.isTrigger = false;
+            }
 
             shootTimer = 0;
         }
 
         public Enemy GetEnemyTarget()
         {
-            RaycastHit[] hits = Physics.SphereCastAll(transform.position, attackRange, transform.up);
-            enemies = hits.Where(h => h.collider.CompareTag("Enemy")).Select(h => h.collider.GetComponent<Enemy>()).ToList();
+            Collider[] colliders = Physics.OverlapSphere(transform.position, attackRange);
+            enemies.Clear();
 
-            var _enemies = enemies.Where(e => !e.IsDie && e.gameObject.activeSelf);
+            foreach (var collider in colliders)
+            {
+                if (collider.CompareTag("Enemy"))
+                {
+                    var enemy = collider.GetComponent<Enemy>();
+                    if (enemy != null && !enemy.IsDie && enemy.gameObject.activeSelf)
+                    {
+                        enemies.Add(enemy);
+                    }
+                }
+            }
+
+            if (enemies.Count == 0)
+                return null;
 
             switch (aimType)
             {
                 case TowerAimType.Farthest:
-                    {
-                        return _enemies.OrderByDescending(e => Vector3.Distance(e.transform.position, transform.position)).FirstOrDefault();
-                    }
+                    return GetFarthest();
                 case TowerAimType.Farthest_Less_Health:
-                    {
-                        return _enemies.OrderByDescending(e => Vector3.Distance(e.transform.position, transform.position))
-                         .ThenBy(e => e.CurrentHealth).FirstOrDefault();
-                    }
+                    return GetFarthestLessHealth();
                 case TowerAimType.Farthest_Most_Health:
-                    {
-                        return _enemies.OrderByDescending(e => Vector3.Distance(e.transform.position, transform.position))
-                        .ThenByDescending(e => e.CurrentHealth).FirstOrDefault();
-                    }
+                    return GetFarthestMostHealth();
                 case TowerAimType.Nearest:
-                    {
-                        return _enemies.OrderBy(e => Vector3.Distance(e.transform.position, transform.position)).FirstOrDefault();
-                    }
+                    return GetNearest();
                 case TowerAimType.Nearest_Less_Health:
-                    {
-                        return _enemies.OrderBy(e => Vector3.Distance(e.transform.position, transform.position))
-                         .ThenBy(e => e.CurrentHealth).FirstOrDefault();
-                    }
+                    return GetNearestLessHealth();
                 case TowerAimType.Nearest_Most_Health:
-                    {
-                        return _enemies.OrderBy(e => Vector3.Distance(e.transform.position, transform.position))
-                        .ThenByDescending(e => e.CurrentHealth).FirstOrDefault();
-                    }
+                    return GetNearestMostHealth();
                 default:
                     return null;
             }
+        }
+
+        private Enemy GetNearest()
+        {
+            Enemy nearest = null;
+            float minDist = float.MaxValue;
+            
+            foreach (var enemy in enemies)
+            {
+                float dist = Vector3.Distance(transform.position, enemy.transform.position);
+                if (dist < minDist)
+                {
+                    minDist = dist;
+                    nearest = enemy;
+                }
+            }
+            return nearest;
+        }
+
+        private Enemy GetFarthest()
+        {
+            Enemy farthest = null;
+            float maxDist = float.MinValue;
+            
+            foreach (var enemy in enemies)
+            {
+                float dist = Vector3.Distance(transform.position, enemy.transform.position);
+                if (dist > maxDist)
+                {
+                    maxDist = dist;
+                    farthest = enemy;
+                }
+            }
+            return farthest;
+        }
+
+        private Enemy GetNearestLessHealth()
+        {
+            Enemy target = null;
+            float minDist = float.MaxValue;
+            float minHealth = float.MaxValue;
+            
+            foreach (var enemy in enemies)
+            {
+                float dist = Vector3.Distance(transform.position, enemy.transform.position);
+                if (dist < minDist || (dist == minDist && enemy.CurrentHealth < minHealth))
+                {
+                    minDist = dist;
+                    minHealth = enemy.CurrentHealth;
+                    target = enemy;
+                }
+            }
+            return target;
+        }
+
+        private Enemy GetNearestMostHealth()
+        {
+            Enemy target = null;
+            float minDist = float.MaxValue;
+            float maxHealth = float.MinValue;
+            
+            foreach (var enemy in enemies)
+            {
+                float dist = Vector3.Distance(transform.position, enemy.transform.position);
+                if (dist < minDist || (dist == minDist && enemy.CurrentHealth > maxHealth))
+                {
+                    minDist = dist;
+                    maxHealth = enemy.CurrentHealth;
+                    target = enemy;
+                }
+            }
+            return target;
+        }
+
+        private Enemy GetFarthestLessHealth()
+        {
+            Enemy target = null;
+            float maxDist = float.MinValue;
+            float minHealth = float.MaxValue;
+            
+            foreach (var enemy in enemies)
+            {
+                float dist = Vector3.Distance(transform.position, enemy.transform.position);
+                if (dist > maxDist || (dist == maxDist && enemy.CurrentHealth < minHealth))
+                {
+                    maxDist = dist;
+                    minHealth = enemy.CurrentHealth;
+                    target = enemy;
+                }
+            }
+            return target;
+        }
+
+        private Enemy GetFarthestMostHealth()
+        {
+            Enemy target = null;
+            float maxDist = float.MinValue;
+            float maxHealth = float.MinValue;
+            
+            foreach (var enemy in enemies)
+            {
+                float dist = Vector3.Distance(transform.position, enemy.transform.position);
+                if (dist > maxDist || (dist == maxDist && enemy.CurrentHealth > maxHealth))
+                {
+                    maxDist = dist;
+                    maxHealth = enemy.CurrentHealth;
+                    target = enemy;
+                }
+            }
+            return target;
         }
 
         private void Update()

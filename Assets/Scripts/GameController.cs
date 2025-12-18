@@ -42,8 +42,8 @@ namespace TowerDefense
 
         [Space, SerializeField]
         private UnityEvent<int> onNextWave;
-        [Space, SerializeField]
-        private UnityEvent<int> onMoneyUpdate;
+        [Space]
+        public UnityEvent<int> onMoneyUpdate;
 
         public float GameSpeed => gameSpeed;
 
@@ -76,13 +76,13 @@ namespace TowerDefense
         {
             ObjectPool.ClearAll();
 
-            UIManager.SetupTowerUI(towerCollection.ToArray());
-
             totalTimer = 0;
             totalWave = 1;
             timer = 0;
 
             AddMoney(startMoney);
+
+            UIManager.SetupTowerUI(towerCollection.ToArray());
 
             stronghold.Setup(strongholdHealth);
         }

@@ -19,6 +19,7 @@ namespace TowerDefense.UI
 
         public Image iconImage;
 
+        private CanvasGroup canvasGroup;
         private UnitTower tower;
         public UnitTower Tower => tower;
 
@@ -26,6 +27,11 @@ namespace TowerDefense.UI
         private Vector3 currentPosition;
 
         private bool IsDrag = false;
+
+        private void Awake()
+        {
+            canvasGroup = GetComponent<CanvasGroup>();
+        }
 
         public void OnPointerEnter(PointerEventData eventData)
         {
@@ -57,6 +63,14 @@ namespace TowerDefense.UI
             priceUI.text = tower.TowerPrice.ToString();
 
             iconImage.sprite = tower.UnitIcon;
+        }
+
+        public void UpdateMoney(int currentMoney)
+        {
+            if (canvasGroup != null)
+            {
+                canvasGroup.alpha = currentMoney >= tower.TowerPrice ? 1f : 0.5f;
+            }
         }
 
         public void OnBeginDrag(PointerEventData eventData)

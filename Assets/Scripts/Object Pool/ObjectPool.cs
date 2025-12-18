@@ -1,7 +1,7 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
-using System.Threading.Tasks;
 
 namespace TowerDefense.Pooling
 {
@@ -65,7 +65,7 @@ namespace TowerDefense.Pooling
 
         public static GameObject GetPool(int hashCode)
         {
-            if (poolList.ContainsKey(hashCode))
+            if (!poolList.ContainsKey(hashCode))
                 return null;
 
             return poolList[hashCode].Get();
@@ -78,11 +78,20 @@ namespace TowerDefense.Pooling
                 _value.Release(_object);
         }
 
-        public static async void ReleasePool(int hashCode, GameObject _object, float delay)
+        public static void ReleasePool(int hashCode, GameObject _object, float delay)
         {
-            await Task.Delay((int)(delay * 1000));
+            if (_object != null && _object.TryGetComponent<MonoBehaviour>(out var component))
+            {
+                component.StartCoroutine(ReleasePoolDelayed(hashCode, _object, delay));
+            }
+        }
 
-            ReleasePool(hashCode, _object);
+        private static IEnumerator ReleasePoolDelayed(int hashCode, GameObject _object, float delay)
+        {
+            yield return new WaitForSeconds(delay);
+            
+            if (_object != null)
+                ReleasePool(hashCode, _object);
         }
 
         public static void Dispose(int hashCode)
@@ -96,6 +105,10 @@ namespace TowerDefense.Pooling
 
         public static void ClearAll()
         {
+            foreach (var pool in poolList.Values)
+            {
+                pool?.Dispose();
+            }
             poolList.Clear();
         }
 

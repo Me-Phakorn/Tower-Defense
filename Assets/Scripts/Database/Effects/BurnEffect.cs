@@ -9,9 +9,18 @@ namespace TowerDefense.Database
         [SerializeField, Range(1, 10)]
         protected int effectTick = 3;
 
-        public override void ApplyEffect(float baseDamage,Enemy[] enemies)
+        public int EffectTick => effectTick;
+        public float TickInterval => effectDuration / effectTick;
+        
+        public float GetTickDamage(float baseDamage, int stackCount)
         {
+            return baseDamage * (effectPercent / 100f) * stackCount;
+        }
 
+        public override void ApplyEffect(float baseDamage, Enemy[] enemies)
+        {
+            foreach (IEffectStatus enemy in enemies)
+                enemy.AddEffectStatus(baseDamage, this);
         }
     }
 }

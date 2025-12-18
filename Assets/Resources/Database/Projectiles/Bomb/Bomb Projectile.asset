@@ -18,6 +18,6 @@ MonoBehaviour:
   projectilePrefab: {fileID: 2469748934587511824, guid: 7c48ed60774c5184ebe37efeb68e3817, type: 3}
   multipleDamage: 1
   projectileSpeed: 18.03
-  effect: {fileID: 0}
+  effect: {fileID: 11400000, guid: 6c7fc313014f7f34d95a7ffe6b9fac1a, type: 2}
   bombRange: 1
-  damagePercent: 101
+  damagePercent: 100

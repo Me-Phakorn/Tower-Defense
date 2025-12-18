@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TowerDefense.Database;
@@ -82,6 +83,8 @@ namespace TowerDefense
                 transform.position = waypoints[0].position;
         }
 
+        private const float WAYPOINT_THRESHOLD = 0.1f;
+
         private void Update()
         {
             if (HasEffect)
@@ -91,6 +94,18 @@ namespace TowerDefense
                 {
                     _effect.effectTimer += Time.deltaTime;
 
+                    if (_effect.effect is BurnEffect burnEffect)
+                    {
+                        _effect.tickTimer += Time.deltaTime;
+                        
+                        if (_effect.tickTimer >= burnEffect.TickInterval)
+                        {
+                            float tickDamage = burnEffect.GetTickDamage(_effect.baseDamage, _effect.stackCount);
+                            Damage(tickDamage);
+                            _effect.tickTimer = 0;
+                        }
+                    }
+
                     if (_effect.effectTimer >= _effect.effect.EffectDuration)
                         RemoveEffectStatus(_effect.effect);
                 }
@@ -99,7 +114,7 @@ namespace TowerDefense
             if (IsPause || !HasPath || IsDie)
                 return;
 
-            if (transform.position == waypoints[currentWaypointIndex].position)
+            if (Vector3.Distance(transform.position, waypoints[currentWaypointIndex].position) < WAYPOINT_THRESHOLD)
             {
                 currentWaypointIndex++;
 
@@ -111,8 +126,9 @@ namespace TowerDefense
             {
                 transform.position = Vector3.MoveTowards(transform.position, waypoints[currentWaypointIndex].position, movementSpeed * Time.deltaTime);
 
-                if (waypoints[currentWaypointIndex].position - transform.position != Vector3.zero)
-                    transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(waypoints[currentWaypointIndex].position - transform.position), Time.deltaTime * 7);
+                Vector3 direction = waypoints[currentWaypointIndex].position - transform.position;
+                if (direction.sqrMagnitude > 0.001f)
+                    transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(direction), Time.deltaTime * 7);
             }
         }
 
@@ -133,14 +149,20 @@ namespace TowerDefense
 
             if (currentHealth <= 0 && !IsPause)
             {
-                IsPause = false;
+                IsPause = true;
 
                 GameController.Instance?.AddMoney(monsterMoney);
 
                 _collider.enabled = false;
                 animator.SetTrigger("Die");
-                Invoke("Release", 2);
+                StartCoroutine(DelayedRelease(2f));
             }
+        }
+
+        private IEnumerator DelayedRelease(float delay)
+        {
+            yield return new WaitForSeconds(delay);
+            Release();
         }
 
         public void AddEffectStatus<T>(float baseDamage, T effect) where T : Effect
@@ -148,33 +170,37 @@ namespace TowerDefense
             var _stacks = effectStacks.Where(e => e.effect == effect).FirstOrDefault();
 
             if (_stacks == null)
+            {
                 effectStacks.Add(new Effect.Stack(baseDamage, effect));
-            else
-                _stacks.effectTimer = 0;
-
-            if (effect.GetType() == typeof(SlowEffect))
-            {
-                var _effect = effect as SlowEffect;
-                movementSpeed = baseSpeed - (baseSpeed * (_effect.SlowPercent / 100));
             }
-            else if (effect.GetType() == typeof(BurnEffect))
+            else
             {
+                _stacks.effectTimer = 0;
+                
+                if (effect is BurnEffect)
+                {
+                    _stacks.stackCount++;
+                    _stacks.tickTimer = 0;
+                }
+            }
 
+            if (effect is SlowEffect slowEffect)
+            {
+                movementSpeed = baseSpeed - (baseSpeed * (slowEffect.SlowPercent / 100));
             }
         }
 
         private void RemoveEffectStatus<T>(T effect) where T : Effect
         {
-            effectStacks.Remove(effectStacks.Where(e => e.effect == effect).FirstOrDefault());
-
-            if (effect.GetType() == typeof(SlowEffect))
+            var stack = effectStacks.FirstOrDefault(e => e.effect == effect);
+            if (stack != null)
             {
-                var _effect = effect as SlowEffect;
-                movementSpeed = baseSpeed;
+                effectStacks.Remove(stack);
             }
-            else if (effect.GetType() == typeof(BurnEffect))
-            {
 
+            if (effect is SlowEffect)
+            {
+                movementSpeed = baseSpeed;
             }
         }
     }

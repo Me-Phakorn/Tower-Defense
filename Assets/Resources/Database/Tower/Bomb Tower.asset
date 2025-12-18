@@ -20,6 +20,6 @@ MonoBehaviour:
   targetType: 1
   aimType: 5
   towerPrice: 100
-  attackDamage: 10
+  attackDamage: 15
   fireRate: 2
   attackRange: 5

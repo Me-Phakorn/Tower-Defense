@@ -29,7 +29,7 @@ namespace TowerDefense.Database
         [SerializeField]
         private int towerPrice = 0;
 
-        [SerializeField, Range(1, 10)]
+        [SerializeField, Range(1, 30)]
         private int attackDamage = 1;
 
         [SerializeField, Range(0.1f, 5f)]

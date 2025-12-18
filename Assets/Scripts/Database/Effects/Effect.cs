@@ -13,6 +13,9 @@ namespace TowerDefense.Database
             public float baseDamage;
             public float effectTimer;
             public float effectDuration;
+            
+            public float tickTimer;
+            public int stackCount;
 
             public Stack(float baseDamage, Effect effect)
             {
@@ -22,6 +25,8 @@ namespace TowerDefense.Database
                 effectDuration = effect.EffectDuration;
 
                 effectTimer = 0;
+                tickTimer = 0;
+                stackCount = 1;
             }
         }
 
